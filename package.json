@@ -15,6 +15,7 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
+    "netlify-cli": "^2.25.0",
     "netlify-lambda": "^1.6.3"
   }
 }
