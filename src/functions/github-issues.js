@@ -27,19 +27,20 @@ exports.handler = async function(event) {
 
 GitHub issue [#${params.issue.number}](${params.issue.html_url}) labeled with \`help wanted\`
 
-Title: **${params.issue.title}**
+*Title:* **${params.issue.title}**
 
-Description:
+*Description:*
 
-${params.issue.body}
+${truncate(params.issue.body)}
 
+
+*Read more in GitHub. Also questions and comments about the issue should be posted in GitHub.*
 
 ${params.issue.html_url}
 `;
+
       await postMessage(message);
     }
-
-    console.log(params);
   } catch (err) {
     console.error(err);
   }
@@ -79,4 +80,26 @@ async function fetchJson(url, options) {
   }
 
   return response.json();
+}
+
+function truncate(str, wordCount = 80) {
+  const words = stripMarkdown(str).split(" ");
+
+  return (
+    words.slice(0, wordCount).join(" ") +
+    (words.length > wordCount ? "..." : "")
+  );
+}
+
+// Strip some unwanted markdown from the issue description
+function stripMarkdown(str) {
+  return (
+    str
+      // Remove code blocks
+      .replace(/```([.\s\S]*?)```/gm, "")
+      // Remove images
+      .replace(/\!\[(.*?)\][\[\(].*?[\]\)]/g, "")
+      // Strip emphasis
+      .replace(/([\*_]{1,3})(\S.*?\S{0,1})\1/g, "$2")
+  );
 }
